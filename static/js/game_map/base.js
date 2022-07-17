@@ -1,5 +1,5 @@
 import { GameObject } from "/static/js/game_object/base.js";
-import {GameController} from "/static/js/game_controller/base.js"
+import { GameController } from "/static/js/game_controller/base.js";
 
 class GameMap extends GameObject {
   constructor(root) {
@@ -16,10 +16,32 @@ class GameMap extends GameObject {
     // 为画布添加焦点事件即focus函数
     this.$canvas.focus();
     // 创建按键存储删除模块
-    this.controller = new GameController(this.$canvas)
+    this.controller = new GameController(this.$canvas);
+    // 添加头部html代码
+    this.root.$kof.append(
+      $(`<div class="kof-head">
+        <div class="kof-head-hp-0"><div><div></div></div></div>
+        <div class="kof-head-timer">60</div>
+        <div class="kof-head-hp-1"><div><div></div></div></div>
+    </div>`)
+    );
+
+    this.time_left = 30000; // 剩余时间、单位：毫秒
+    this.$timer = this.root.$kof.find(".kof-head-timer");
   }
   start() {}
   update() {
+    this.time_left -= this.timedelta;
+    if (this.time_left < 0) {
+      this.time_left = 0;
+      let [a, b] = this.root.players;
+      if (a.status !== 6 && b.status !== 6) {
+        a.status = b.status = 6;
+        a.frame_current_cnt = b.frame_current_cnt = 0;
+        a.vx = b.vx = 0;
+      }
+    }
+    this.$timer.text(parseInt(this.time_left / 1000));
     this.render();
   }
   // 渲染函数

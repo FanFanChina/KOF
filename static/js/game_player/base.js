@@ -28,6 +28,8 @@ class GamePlayer extends GameObject {
     this.animations = new Map(); // 存放角色动作
     this.frame_current_cnt = 0; // 当前记录了多少帧
     this.hp = 100;
+    this.$hp = this.root.$kof.find(`.kof-head-hp-${this.id}>div`);
+    this.$hp_div = this.$hp.find("div");  
   }
 
   start() {}
@@ -110,10 +112,24 @@ class GamePlayer extends GameObject {
     this.status = 5;
     this.frame_current_cnt = 0;
     this.frame_current_cnt = 0;
-    this.hp = Math.max(0, this.hp - 10);
+    this.hp = Math.max(0, this.hp - 20);
+    this.$hp_div.animate(
+      {
+        width: (this.$hp.parent().width() * this.hp) / 100,
+      },
+      300
+    );
+    this.$hp.animate(
+      {
+        width: (this.$hp.parent().width() * this.hp) / 100,
+      },
+      600
+    );
+
     if (this.hp <= 0) {
       this.status = 6;
       this.frame_current_cnt = 0;
+      this.vx = 0;
     }
   }
 
